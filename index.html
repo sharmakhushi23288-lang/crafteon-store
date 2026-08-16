@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Crafteon | Handmade Materials</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Georgia,serif;background:#fffaf7;color:#443844}
+header{position:sticky;top:0;background:#fffaf7ee;backdrop-filter:blur(8px);border-bottom:1px solid #eadfe5;z-index:5}
+nav{max-width:1100px;margin:auto;padding:16px 20px;display:flex;justify-content:space-between;align-items:center}
+.logo{font-size:26px;font-weight:bold;color:#6c4b78}.logo span{color:#e56f9c}
+nav a{margin:0 10px;color:#443844;text-decoration:none;font-family:Arial}
+button{border:0;border-radius:25px;padding:11px 17px;cursor:pointer;font-weight:bold}
+.cart{background:#e56f9c;color:#fff}
+.hero{max-width:1100px;margin:32px auto;padding:55px 30px;border-radius:30px;background:linear-gradient(120deg,#ffe0ea,#fff0d5,#e6ddff);display:grid;grid-template-columns:1.2fr .8fr;gap:25px;align-items:center}
+h1{font-size:clamp(42px,6vw,70px);line-height:1;color:#634b70;margin:0 0 18px}
+.hero p{font:17px Arial;color:#665d65;max-width:600px}.primary{background:#6c4b78;color:#fff}
+.art{font-size:150px;text-align:center}
+section{max-width:1100px;margin:55px auto;padding:0 20px}.title{text-align:center}.title h2{font-size:36px;color:#634b70;margin-bottom:5px}.title p{font:15px Arial;color:#777}
+.controls{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:25px 0}.search{padding:12px 18px;border:1px solid #ddd0d8;border-radius:25px;min-width:250px}.filter{background:#fff;border:1px solid #ddd0d8}.filter.active{background:#6c4b78;color:#fff}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}.card{background:#fff;border:1px solid #eee3e7;border-radius:20px;overflow:hidden;box-shadow:0 8px 22px #6c4b7812}.pic{height:180px;display:grid;place-items:center;font-size:68px;background:linear-gradient(135deg,#ffe1ea,#f2e8ff)}.body{padding:16px}.body h3{margin:0;color:#5d4865}.desc{font:13px Arial;color:#777;min-height:38px}.price{font:bold 18px Arial;color:#e05d8e}.add{float:right;background:#f8e7ef;color:#a64871}
+.about{background:#fff;padding:30px;border-radius:25px;text-align:center;border:1px solid #eee3e7;font-family:Arial}
+footer{margin-top:60px;background:#6c4b78;color:#fff;text-align:center;padding:35px;font-family:Arial}
+.modal{display:none;position:fixed;inset:0;background:#33283a99;z-index:10;align-items:center;justify-content:center;padding:18px}.modal.show{display:flex}.box{background:#fff;border-radius:24px;padding:24px;width:min(600px,100%);max-height:90vh;overflow:auto}.close{float:right;background:#eee}.item{display:flex;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid #eee}.item .info{flex:1}.qty button{padding:5px 9px;background:#f2e7ed}.form input,.form textarea{width:100%;margin:7px 0;padding:12px;border:1px solid #ddd0d8;border-radius:12px}.form textarea{min-height:80px}
+@media(max-width:800px){.hero{grid-template-columns:1fr}.grid{grid-template-columns:repeat(2,1fr)}nav a{display:none}}@media(max-width:500px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header><nav><div class="logo">Crafteon <span>✦</span></div><div><a href="#shop">Shop</a><a href="#about">Our Story</a></div><button class="cart" onclick="openCart()">🛒 Cart (<span id="count">0</span>)</button></nav></header>
+<main>
+<section class="hero"><div><h1>Craft something beautiful.</h1><p>Colourful, elegant handmade materials for your creative projects, gifts, decorations and DIY ideas.</p><a href="#shop"><button class="primary">Shop Materials ✨</button></a></div><div class="art">🌸🎀🧵</div></section>
+<section id="shop"><div class="title"><h2>Our Materials</h2><p>Find something special for your next creation.</p></div>
+<div class="controls"><input id="search" class="search" placeholder="🔎 Search materials..." oninput="render()"><button class="filter active" onclick="cat('All',this)">All</button><button class="filter" onclick="cat('Flowers',this)">Flowers</button><button class="filter" onclick="cat('Ribbons',this)">Ribbons</button><button class="filter" onclick="cat('Beads',this)">Beads</button><button class="filter" onclick="cat('Paper',this)">Paper</button><button class="filter" onclick="cat('DIY Kits',this)">DIY Kits</button></div>
+<div class="grid" id="products"></div></section>
+<section id="about"><div class="about"><h2>Made for makers 💕</h2><p>Crafteon is your colourful and elegant destination for handmade craft materials. Replace the sample products with your own items, photos and prices.</p></div></section>
+</main><footer><h2>Crafteon</h2><p>Handmade materials • Creative supplies • Made for makers</p><p>© 2026 Crafteon</p></footer>
+<div class="modal" id="modal" onclick="if(event.target===this)closeCart()"><div class="box"><button class="close" onclick="closeCart()">×</button><h2>Your Cart 🛒</h2><div id="items"></div><h3>Total: ₹<span id="total">0</span></h3><div class="form"><h3>Order request</h3><input id="name" placeholder="Your name"><input id="phone" placeholder="Phone number"><textarea id="address" placeholder="Delivery address"></textarea><button class="primary" onclick="order()">Send Order Request</button><p id="msg"></p></div></div></div>
+<script>
+const products=[
+{id:1,n:"Pastel Paper Flowers",c:"Flowers",p:149,e:"🌸",d:"Delicate handmade paper flowers."},
+{id:2,n:"Satin Ribbon Bundle",c:"Ribbons",p:99,e:"🎀",d:"Pretty ribbons for gifts and crafts."},
+{id:3,n:"Rainbow Bead Mix",c:"Beads",p:129,e:"📿",d:"A colourful mix for handmade projects."},
+{id:4,n:"Premium Craft Paper",c:"Paper",p:179,e:"📜",d:"Textured sheets for cards and decorations."},
+{id:5,n:"Mini Flower-Making Kit",c:"DIY Kits",p:299,e:"🪻",d:"Materials for making your own blooms."},
+{id:6,n:"Pearl Bead Collection",c:"Beads",p:199,e:"🤍",d:"Elegant pearl-style beads."},
+{id:7,n:"Lace Trim Pack",c:"Ribbons",p:119,e:"🧵",d:"Decorative lace trims in assorted designs."},
+{id:8,n:"Cute Sticker Sheet Set",c:"Paper",p:89,e:"✨",d:"Charming stickers for journals and gifts."}];
+let current="All",cart=JSON.parse(localStorage.getItem("crafteonCart")||"[]");
+function cat(c,b){current=c;document.querySelectorAll(".filter").forEach(x=>x.classList.remove("active"));b.classList.add("active");render()}
+function render(){let q=document.getElementById("search").value.toLowerCase();let a=products.filter(x=>(current==="All"||x.c===current)&&x.n.toLowerCase().includes(q));document.getElementById("products").innerHTML=a.map(x=>`<article class="card"><div class="pic">${x.e}</div><div class="body"><h3>${x.n}</h3><p class="desc">${x.d}</p><span class="price">₹${x.p}</span><button class="add" onclick="add(${x.id})">Add +</button></div></article>`).join("")||"<p>No materials found.</p>"}
+function save(){localStorage.setItem("crafteonCart",JSON.stringify(cart));document.getElementById("count").textContent=cart.reduce((s,x)=>s+x.q,0)}
+function add(id){let x=cart.find(a=>a.id===id);x?x.q++:cart.push({id,q:1});save();openCart()}
+function openCart(){draw();document.getElementById("modal").classList.add("show")}function closeCart(){document.getElementById("modal").classList.remove("show")}
+function change(id,d){let x=cart.find(a=>a.id===id);x.q+=d;if(x.q<1)cart=cart.filter(a=>a.id!==id);save();draw()}
+function draw(){let total=0;if(!cart.length){document.getElementById("items").innerHTML="<p>Your cart is empty 🌷</p>";document.getElementById("total").textContent=0;return}document.getElementById("items").innerHTML=cart.map(i=>{let p=products.find(x=>x.id===i.id);total+=p.p*i.q;return`<div class="item"><span>${p.e}</span><div class="info"><b>${p.n}</b><br><small>₹${p.p}</small></div><div class="qty"><button onclick="change(${p.id},-1)">−</button> ${i.q} <button onclick="change(${p.id},1)">+</button></div></div>`}).join("");document.getElementById("total").textContent=total}
+function order(){let n=document.getElementById("name").value.trim(),ph=document.getElementById("phone").value.trim(),a=document.getElementById("address").value.trim();document.getElementById("msg").textContent=n&&ph&&a?"Order request prepared! Connect this button to WhatsApp/payment for real orders.":"Please fill in all fields."}
+render();save();
+</script>
+</body></html>
